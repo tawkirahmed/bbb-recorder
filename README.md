@@ -1,5 +1,5 @@
 # bbb-recorder
-
+This is a fork of https://github.com/jibon57/bbb-recorder and modified very little to suit some specific use cases.
 Bigbluebutton recordings export to `webm` or `mp4` & live broadcasting. This is an example how I have implemented BBB recordings to distibutable file. 
 
 1. Videos will be copied to `./recordings`
@@ -35,7 +35,7 @@ sudo apt-get install ffmpeg
 Clone the project first:
 
 ```javascript
-git clone https://github.com/jibon57/bbb-recorder
+git clone https://github.com/tawkirahmed/bbb-recorder
 cd bbb-recorder
 npm install --ignore-scripts
 ```
