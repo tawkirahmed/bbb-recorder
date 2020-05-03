@@ -25,6 +25,7 @@ var options     = {
     '--shm-size=1gb',
     '--disable-dev-shm-usage',
     '--start-fullscreen',
+    '--timeout=60000',
     '--app=https://www.google.com/',
     `--window-size=${width},${height}`,
   ],
@@ -63,14 +64,19 @@ async function main() {
         });
 
         await page._client.send('Emulation.clearDeviceMetricsOverride')
-        await page.goto(url, {waitUntil: 'networkidle2'})
+        await page.goto(url, {
+            timeout: 0,
+            waitUntil: 'networkidle0'
+        })
         await page.setBypassCSP(true)
 
-        await page.waitForSelector('button[class=acorn-play-button]');
+        await page.waitForSelector('.acorn-play-button', {
+            visible: true,
+          });
         await page.$eval('#navbar', element => element.style.display = "none");
         await page.$eval('#copyright', element => element.style.display = "none");
-        await page.$eval('.acorn-controls', element => element.style.display = "none");
-        await page.click('video[id=video]', {waitUntil: 'domcontentloaded'});
+        await page.$eval('.acorn-controls', element => element.style.opacity = 0);
+        await page.click('.acorn-play-button', {waitUntil: 'domcontentloaded'});
 
         await page.evaluate((x) => {
             console.log("REC_START");
@@ -110,7 +116,7 @@ main()
 function convertAndCopy(filename){
  
     var copyFromPath = homedir + "/Downloads";
-    var copyToPath = "/var/www/bigbluebutton-default/record";
+    var copyToPath = "./recordings";
     var onlyfileName = filename.split(".webm")
     var mp4File = onlyfileName[0] + ".mp4"
     var copyFrom = copyFromPath + "/" + filename + ""
@@ -147,7 +153,7 @@ function convertAndCopy(filename){
 function copyOnly(filename){
 
     var copyFrom = homedir + "/Downloads/" + filename;
-    var copyToPath = "/var/www/bigbluebutton-default/record";
+    var copyToPath = "./recordings";
     var copyTo = copyToPath + "/" + filename;
 
     if(!fs.existsSync(copyToPath)){
