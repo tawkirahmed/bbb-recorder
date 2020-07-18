@@ -83,8 +83,9 @@ async function main() {
             window.postMessage({type: 'REC_START'}, '*')
         })
 
-        // Perform any actions that have to be captured in the exported video
-        await page.waitFor((duration * 1000))
+        await page.waitForFunction('document.getElementsByClassName("acorn-play-button")[0].textContent != "Pause"', {
+            timeout: 3 * 60 * 60 * 1000
+        });
 
         await page.evaluate(filename=>{
             window.postMessage({type: 'SET_EXPORT_PATH', filename: filename}, '*')
