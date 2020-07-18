@@ -50,7 +50,7 @@ async function main() {
 
         if(!url){ url = 'https://www.mynaparrot.com/' }
         if(!exportname){ exportname = 'export.webm' }
-        if(!duration){ duration = 10 }
+        if(!duration){ duration = -1 }
         if(!convert){ convert = false }
         
         const browser = await puppeteer.launch(options)
@@ -82,10 +82,14 @@ async function main() {
             console.log("REC_START");
             window.postMessage({type: 'REC_START'}, '*')
         })
-
-        await page.waitForFunction('document.getElementsByClassName("acorn-play-button")[0].textContent != "Pause"', {
-            timeout: 3 * 60 * 60 * 1000
-        });
+        
+        if(duration > 0) {
+            await page.waitFor((duration * 1000))
+        } else {
+            await page.waitForFunction('document.getElementsByClassName("acorn-play-button")[0].textContent != "Pause"', {
+                timeout: 3 * 60 * 60 * 1000
+            });
+        }
 
         await page.evaluate(filename=>{
             window.postMessage({type: 'SET_EXPORT_PATH', filename: filename}, '*')
